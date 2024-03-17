@@ -32,4 +32,5 @@
 *.app
 
 # ETC.
-*memo*
+*igmemo*
+.DS_Store
