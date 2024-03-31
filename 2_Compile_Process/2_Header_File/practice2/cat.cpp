@@ -1,5 +1,5 @@
-#include <iostream>
-#include "cat.h"
+#include <iostream> // standard library
+#include "cat.h"    // user specific header
 
 void Cat::speak()
 {
