@@ -334,3 +334,98 @@ int main()
 
 - Heap 메모리는 Stack 영역보다 덜 빡빡하게 들어감(Memory Allocator 마음)
 
+<br>
+<br>
+
+## 8. Heap, Stack, Static
+
+###  Stack
+- stack frame 단위로 가장 위에 allocation/disallocation 이 발생 
+- 매우 빠르다.
+
+###  Heap
+- 런타임에 중간에 빈공간이 있는지 / 어느정도 공간이 있는지 확인 하는 과정이 필요
+- 멀티 쓰레드 프로그래밍시 race condition을 방지하기 위해 복잡한 방식으로 메모리 관리
+- 느리다.
+- Dynamic allocation 가능
+- Large Size allocation 가능
+  
+<br>
+
+```cpp
+class Cat
+{
+    public:
+    private:
+        int m_age;
+};
+
+int main()
+{ 
+    int a[5];
+    int a[20];
+    std::array<int, 300> a;         // 1.2kb
+    std::array<int, 500000> b;      // 2mb (stack)
+    std::vector<int> b(500000);     // 2mb (heap)
+
+    Cat cat;                        // stack
+    std::array<int, 100> cats;      // stack
+    std::vector<Cat> cats(100000);  // heap
+
+    int count;
+    std::cin >> count;
+    std::vector<Cat> dynamicCats(count); // heap
+
+    // std::array (stack array)
+    // std::vector (heap array)
+}
+```
+
+<br>
+
+### Static(global)
+- process가 실행되는 동시에 갖고있음
+
+```cpp
+#include <iostream>
+
+int ga=0;
+
+int main()
+{
+    int sa = 0;
+    std::cout << "&sa : " << (long)&sa << std::endl;
+
+    int * hap = new int;
+    std::cout << "&hap : " << (long)hap << std::endl;
+
+    // Prefer Smart Pointer
+    delete hap;
+    std::cout << "&ga : " << (long)&ga << std::endl;
+    
+    return 0;
+}
+
+/*
+&sa : 6099415032
+&hap : 5500854464
+&ga : 4367499264
+*/
+```
+
+<img src = "image-8.png" width = "60%">
+
+<br>
+<br>
+
+## 8. Object Creation
+
+<img src = "image-9.png" width = "60%">
+
+### 1번 - stack 메모리에 할당
+- scope가 끝나면 메모리에서 내려감
+
+### 2번 - heap 메모리에 할당
+- scope에 자유로움
+- momory leak 발생할 수 있음
+- allocation이 느림

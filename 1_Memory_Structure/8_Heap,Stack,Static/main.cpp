@@ -2,32 +2,32 @@
 // Stack - alloc / disalloc 이 빠르다
 // Heap - alloc / disaclloc 이 느리다(멀티 스레딩, ..), Dynamic allocation 가능
 
-#include <array>
-#include <vector>
-#include <iostream>
+// #include <array>
+// #include <vector>
+// #include <iostream>
 
-class Cat
-{
-    public:
-    private:
-        int m_age;
-};
+// class Cat
+// {
+//     public:
+//     private:
+//         int m_age;
+// };
 
 // int main()
 // { 
 //     int a[5];
 //     int a[20];
 //     std::array<int, 300> a;         // 1.2kb
-//     std::array<int, 500000> b;      // 2mb
-//     std::vector<int> b(500000);     // 2mb
+//     std::array<int, 500000> b;      // 2mb (stack)
+//     std::vector<int> b(500000);     // 2mb (heap)
 
-    // Cat cat; // stack
-    // std::vector<int> b(500000);     // 2mb (heap)
-    // std::vector<Cat> cats(100000);
+//     Cat cat;                        // stack
+//     std::array<int, 100> cats;      // stack
+//     std::vector<Cat> cats(100000);  // heap
 
-    // int count;
-    // std::cin >> count;
-    // std::vector<Cat> dynamicCats(count); // heap
+//     int count;
+//     std::cin >> count;
+//     std::vector<Cat> dynamicCats(count); // heap
 // }
 
 // void foo(int num)
@@ -61,6 +61,8 @@ class Cat
 // }
 
 // static(global)
+
+#include <iostream>
 
 int ga=0;
 
