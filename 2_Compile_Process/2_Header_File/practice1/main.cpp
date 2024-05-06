@@ -1,4 +1,6 @@
-#include "foo.h"
+// #include "foo.h"
+
+void foo();
 
 int main()
 {

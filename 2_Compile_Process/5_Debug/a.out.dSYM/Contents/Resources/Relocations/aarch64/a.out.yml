@@ -1,0 +1,14 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     a.out
+relocations:
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: __Z3addi, symObjAddr: 0x0, symBinAddr: 0x100003C7C, symSize: 0x1C }
+  - { offsetInCU: 0x4479, offset: 0x4479, size: 0x8, addend: 0x0, symName: __ZNSt3__14endlB8ue170006IcNS_11char_traitsIcEEEERNS_13basic_ostreamIT_T0_EES7_, symObjAddr: 0xEC, symBinAddr: 0x100003D68, symSize: 0x58 }
+  - { offsetInCU: 0x44B9, offset: 0x44B9, size: 0x8, addend: 0x0, symName: __ZNSt3__19use_facetB8ue170006INS_5ctypeIcEEEERKT_RKNS_6localeE, symObjAddr: 0x1D0, symBinAddr: 0x100003E4C, symSize: 0x2C }
+  - { offsetInCU: 0x6E7A, offset: 0x6E7A, size: 0x8, addend: 0x0, symName: __Z3addi, symObjAddr: 0x0, symBinAddr: 0x100003C7C, symSize: 0x1C }
+  - { offsetInCU: 0x6EA6, offset: 0x6EA6, size: 0x8, addend: 0x0, symName: __Z3subi, symObjAddr: 0x1C, symBinAddr: 0x100003C98, symSize: 0x1C }
+  - { offsetInCU: 0x6ED2, offset: 0x6ED2, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x38, symBinAddr: 0x100003CB4, symSize: 0x88 }
+  - { offsetInCU: 0x6FA7, offset: 0x6FA7, size: 0x8, addend: 0x0, symName: __ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEElsB8ue170006EPFRS3_S4_E, symObjAddr: 0xC0, symBinAddr: 0x100003D3C, symSize: 0x2C }
+  - { offsetInCU: 0x6FD9, offset: 0x6FD9, size: 0x8, addend: 0x0, symName: __ZNKSt3__19basic_iosIcNS_11char_traitsIcEEE5widenB8ue170006Ec, symObjAddr: 0x144, symBinAddr: 0x100003DC0, symSize: 0x8C }
+  - { offsetInCU: 0x7045, offset: 0x7045, size: 0x8, addend: 0x0, symName: __ZNKSt3__15ctypeIcE5widenB8ue170006Ec, symObjAddr: 0x1FC, symBinAddr: 0x100003E78, symSize: 0x38 }
+...
