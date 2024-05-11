@@ -279,7 +279,7 @@ Class Cat
 2. #pragma preprocessor 사용
 
 ```cpp
-#pragma
+#pragma once
 Class Cat
 {
     public:
