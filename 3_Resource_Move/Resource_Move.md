@@ -1,4 +1,4 @@
-# Resouce Move
+# Resource Move
 
 <br>
 

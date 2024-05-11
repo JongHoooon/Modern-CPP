@@ -362,7 +362,7 @@ g++ main.cpp -Wall -Werror -g
 
 - Header Only Library: #include "header"를 통해 사용
 - Static Library: .lib(윈도우), .a(리눅스) / build process에서 라이브러리를 link 시킨다.
-- Dynamic Librar:
+- Dynamic Library
   - load time: processor를 실행 시킬때 라이브러리 바인딩
   - run time: processor가 실행 중 라이브러리 바인딩
   - .dll(윈도우), .so(리눅스)
