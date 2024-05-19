@@ -31,24 +31,24 @@
 class Cat
 {
 public: 
-    void speak();
+  void speak();
 private:
-    int mAge;
+  int mAge;
 };
 
 Cat staticCat;
 
 int main()
 {
-    std::cout << sizeof(Cat) << std::endl;
-    // 4
-    Cat stackCat;
+  std::cout << sizeof(Cat) << std::endl;
+  // 4
+  Cat stackCat;
 
-    Cat * heapCatPtr = new Cat();
-    delete heapCatPtr;
-    // prefer smartPtr
+  Cat * heapCatPtr = new Cat();
+  delete heapCatPtr;
+  // prefer smartPtr
 
-    return 0;
+  return 0;
 }
 ```
 
@@ -66,14 +66,14 @@ int main()
 class Cat
 {
 public: 
-    void speak();
+  void speak();
 private:
-    double d8;  // 8bytes
-    int i4a;    // 4bytes
-    int i4b;    // 4bytes
-    /*
-    16bytes
-    */
+  double d8;  // 8bytes
+  int i4a;    // 4bytes
+  int i4b;    // 4bytes
+  /*
+  16bytes
+  */
 };
 ```
 
@@ -81,14 +81,14 @@ private:
 class Cat
 {
 public: 
-    void speak();
+  void speak();
 private:
-    int i4a;    // 4bytes
-    double d8;  // 8bytes
-    int i4b;    // 4bytes
-    /*
-    24bytes
-    */
+  int i4a;    // 4bytes
+  double d8;  // 8bytes
+  int i4b;    // 4bytes
+  /*
+  24bytes
+  */
 };
 ```
 
@@ -100,12 +100,12 @@ private:
 class Cat
 {
 public: 
-    void speak();
+  void speak();
 private:
-    char c1;    // 1byte
-    int i4a;    // 4bytes
-    int i4b;    // 4bytes
-    double d8;  // 8bytes
+  char c1;    // 1byte
+  int i4a;    // 4bytes
+  int i4b;    // 4bytes
+  double d8;  // 8bytes
 };
 ```
 
@@ -120,12 +120,12 @@ private:
 class alignas(32) Cat // <-- 32bytes로 변환해 false sharing 방지
 {
 public: 
-    void speak();
+  void speak();
 private:
-    char c1;    // 1byte
-    int i4a;    // 4bytes
-    int i4b;    // 4bytes
-    double d8;  // 8bytes
+  char c1;    // 1byte
+  int i4a;    // 4bytes
+  int i4b;    // 4bytes
+  double d8;  // 8bytes
 };
 ```
 
@@ -150,19 +150,19 @@ private:
 class Cat
 {
 public:
-    void speak()
-    {
-        count++;
-        std::cout << count << "meow" << std::endl;
-    };
-    static int count;
-    static void staticSpeak()
-    {
-        std::cout << "CAT!" << std::endl;
-        // speak(); <-- static 함수는 member 변수와 memeber 함수를 호출할 수 없다.
-    };
+  void speak()
+  {
+    count++;
+    std::cout << count << "meow" << std::endl;
+  };
+  static int count;
+  static void staticSpeak()
+  {
+    std::cout << "CAT!" << std::endl;
+    // speak(); <-- static 함수는 member 변수와 memeber 함수를 호출할 수 없다.
+  };
 private:
-    int Age;
+  int Age;
 };
 ```
 
@@ -174,18 +174,18 @@ private:
 class Cat
 {
 public:
-    void speak()
-    {
-        count++;
-        std::cout << count << "meow" << std::endl;
-    };
-    static int count;
-    static void staticSpeak()
-    {
-        std::cout << "CAT!" << std::endl;
-    };
+  void speak()
+  {
+    count++;
+    std::cout << count << "meow" << std::endl;
+  };
+  static int count;
+  static void staticSpeak()
+  {
+    std::cout << "CAT!" << std::endl;
+  };
 private:
-    int Age;
+  int Age;
 };
 
 int Cat::count = 0;
@@ -200,18 +200,108 @@ int Cat::count = 0;
 class Cat
 {
 public:
-    void speak()
-    {
-        static int count = 0;
-        count++;
-        std::cout << count << "meow" << std::endl;
-    };
-    static void staticSpeak()
-    {
-        std::cout << "CAT!" << std::endl;
-    };
+  void speak()
+  {
+    static int count = 0;
+    count++;
+    std::cout << count << "meow" << std::endl;
+  };
+  static void staticSpeak()
+  {
+    std::cout << "CAT!" << std::endl;
+  };
 private:
-    int Age;
+  int Age;
 };
 ```
 
+<br>
+
+## Member Init List
+
+```cpp
+#include <iostream>
+
+class Cat 
+{
+public:
+  Cat()
+  {
+    std::cout << "constructor" << std::endl;
+    mptr = std::make_unique<Object>();
+  }
+  ~Cat()
+  {
+    std::cout << "destructor" << std::endl;
+  }
+  void speak()
+  {
+    std::cout << "meow" << std::endl;
+  }
+private:
+  int mAge;
+  std::unique_ptr<Object> mptr:
+  Object obj;
+};
+
+int main() 
+{
+  Cat kitty;
+  kitty.speak();
+  return 0;
+}
+```
+
+![alt text](image-4.png)
+
+- Assembly 코드의 call 명령어를 확인해 보면 constructor, destructor 가 함수처럼 실행된 것을 확인 가능
+- heap에 object 생성시
+  - smart pointer 사용
+  - object가 너무 크지 않다면 member object 생성
+
+### Member Init Lists
+
+```cpp
+#include <iostream>
+
+class Cat
+{
+public:
+  /*
+  Cat()
+  {
+    mAge = 1;
+  }
+  Cat(int age)
+  {
+    mAge = age;
+  }
+  */
+  Cat():mAge(1){};
+  Cat(int age):mAge(age){};
+private:
+  int mAge;
+};
+
+class Zoo
+{
+public:
+  /*
+  Zoo(int kittyAge)
+  {
+    mKitty = Cat(kittyAge); // 임시 object(고양이)가 만들어지고 값을 할당하면서 사라짐
+  }
+  */
+  Zoo(int kittyAge): mKitty(Cat(kittyAge)) // 멤버 이니셜라이저 리스트를 사용해 임시 object(고양이)가 만들어지지 않음
+  {}
+private:
+  Cat mKitty;
+};
+
+int main()
+{
+  return 0;
+}
+```
+
+> [cpp reference member init list](https://en.cppreference.com/w/cpp/language/constructor)
