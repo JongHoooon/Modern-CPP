@@ -194,7 +194,9 @@ int Cat::count = 0;
 <img src = "image-3.png" width = "50%">
 
 ### static variable in a function
+- speak() 메소드에서만 사용돼 count를 speak() 메소드 안으로 이동
 - 메모리의 static 영역에 생성돼 서로 다른 object에서 공유한다.
+- 초기화 시점? 추후 학습
 
 ```cpp
 class Cat
@@ -217,7 +219,7 @@ private:
 
 <br>
 
-## Member Init List
+## 4. Member Init List
 
 ```cpp
 #include <iostream>
@@ -256,6 +258,7 @@ int main()
 
 - Assembly 코드의 call 명령어를 확인해 보면 constructor, destructor 가 함수처럼 실행된 것을 확인 가능
 - heap에 object 생성시
+  - constructor에서 heap에 할당, destructor에서 할당 해제 지양
   - smart pointer 사용
   - object가 너무 크지 않다면 member object 생성
 
@@ -289,7 +292,7 @@ public:
   /*
   Zoo(int kittyAge)
   {
-    mKitty = Cat(kittyAge); // 임시 object(고양이)가 만들어지고 값을 할당하면서 사라짐
+    mKitty = Cat(kittyAge); // 임시 object(고양이)가 만들어지고 값을 할당하면서 사라짐(1살 -> 5살)
   }
   */
   Zoo(int kittyAge): mKitty(Cat(kittyAge)) // 멤버 이니셜라이저 리스트를 사용해 임시 object(고양이)가 만들어지지 않음
@@ -305,3 +308,82 @@ int main()
 ```
 
 > [cpp reference member init list](https://en.cppreference.com/w/cpp/language/constructor)
+
+<br>
+
+## 5. copy/move Constructor
+
+- 컴파일러가 알아서 만들어주는 메소드들
+  1. Constructor
+  2. Destructor
+  3. copy/move Constructor
+  4. copy/move Assignment
+
+- member variable로 pointer를 활용해 resource를 관리하게 되면 constructor를 제외한 메소드들을 구현해줘야한다.
+
+> [rule of three/five/zero](https://en.cppreference.com/w/cpp/language/rule_of_three)
+
+- copy constructor
+  - 기존 object의 정보를 copy해 새로운 object를 만들 때 호출되는 생성자
+- move constructor
+  - 기존 object의 정보를 move해 새로운 object를 만들 때 호출되는 생성자
+  - 기존 object의 정보는 새로운 object에 ownership을 뺏긴다.
+  
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Cat 
+{ 
+public:
+  Cat() = default; // default constructor 명시
+  Cat(string name, int age):mName{std::move(name)}, mAge{age}
+  {
+    cout << mName << " constructor" << endl;
+  };
+  ~Cat()
+  {
+    std::cout << mName << " destructor" << endl;
+    // delete mPtr;
+  }
+  Cat(const Cat& other): mName{other.mName}, mAge{other.mAge}
+  {
+    cout << mName << " copy constructor" << endl;
+  }
+  Cat(Cat&& other):mName(std::move(other.mName)), mAge{other.mAge} // mName 의 소유권을 뺏어온다.
+  {
+    cout << mName << " move constructor" << endl;
+  }
+  void print()
+  {
+    cout << mName << " " << mAge << endl;
+  }
+
+private:
+  string mName;
+  int mAge;
+  // char * mPtr;
+};
+
+int main(void) { 
+  Cat kitty{"kitty", 1};
+  Cat kitty2{kitty};  // copy constructor: 권장 방법
+  // Cat kitty3 = kitty; // copy constructor
+  Cat kitty3{std::move(kitty)}; // move constructor
+  return 0;
+}
+
+/*
+kitty constructor
+kitty copy constructor
+kitty move constructor
+kitty destructor
+kitty destructor
+ destructor <- 소유권을 빼껴 이름이 없다.
+*/
+```
+
+<br>
+
+## 6. 
