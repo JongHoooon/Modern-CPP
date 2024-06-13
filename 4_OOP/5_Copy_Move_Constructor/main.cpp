@@ -50,3 +50,5 @@ kitty destructor
 kitty destructor
  destructor <- 소유권을 빼껴 이름이 없다.
 */
+
+
