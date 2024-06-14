@@ -477,3 +477,309 @@ int main(void) {
   return 0;
 }
 ```
+
+<br>
+
+## 7. Operator Overloading
+> [cpp operator overloading reference](https://en.cppreference.com/w/cpp/language/operators)
+- function overloading
+  - 함수의 이름이 같고 파라미터가 다를 때 name mangling을 통해 compiler가 서로 다른 함수로 만들어준다. 
+  - static polymorphism (compile) <-> (참고. Dynamic Polymorphism(상속에서 자세히..)) 
+  
+- operator overloading
+  - *, %, /, new, []...
+
+```cpp
+#include <iostream>
+using namespace std;
+
+struct complexNum
+{
+  double real;
+  double imag;
+
+  complexNum(double r, double i): real{r}, imag{i} {
+    cout << "init!" << endl;
+  };
+  void print() const
+  { 
+    cout << real << " " << imag << "i" << endl;
+  }
+};
+
+complexNum operator+(const complexNum& lhs, const complexNum& rhs) 
+{
+  complexNum c{lhs.real + rhs.real, lhs.imag + rhs.imag};
+  return c;
+}
+
+int main(void)
+{
+  complexNum c1{1, 1};
+  complexNum c2{1, 2};
+  complexNum c{c1 + c2};
+  c.print();
+}
+```
+
+<br>
+
+```cpp
+#include<iostream>
+#include<string>
+using namespace std;
+
+class Cat
+{ 
+public: 
+  Cat(string name, int age): mName{std::move(name)}, mAge{age} {}
+  string name() const
+  {
+    return mName;
+  }
+  int age() const
+  { 
+    return mAge;
+  }
+  // void print() const
+  // {
+  //   cout << mName << " " << mAge << endl;
+  // }
+  void print(ostream& os) const
+  {
+    os << mName << " " << mAge << endl;
+  }
+private:
+  string mName;
+  int mAge;
+};
+bool operator==(const Cat& lhs, const Cat& rhs) 
+{
+  return lhs.age() == rhs.age() && lhs.name() == rhs.name();
+}
+bool operator<(const Cat& lhs, const Cat& rhs)
+{
+  if(lhs.age() < rhs.age()) 
+  { 
+    return true;
+  }
+  return false;
+}
+ostream& operator<<(ostream& os, const Cat& c)
+{
+  return os << c.name() << " " << c.age();
+}
+
+int main(void) 
+{ 
+  Cat kitty{"kitty", 1};
+  Cat nabi{"nabi", 2};
+
+  kitty.print(cout);
+  nabi.print(cout);
+  cout << kitty << endl;
+  cout << nabi << endl;
+  return 0;
+}
+```
+
+<br>
+<br>
+
+## 8. Class Keywords
+
+### const
+- 가능하다면 어디든 const를 붙이자
+- compile 타임에 개발자가 어디가 잘못됐는지 인지할 수 있다.
+
+```cpp
+class Cat
+{
+public: 
+  Cat(string name): mName{std::move(name)} {};
+  void speak() const
+  {
+    // 🚨 const 로 선언해 mName 값이 변하는 것을
+    // 감지해 컴파일 타임에 에러 발생!
+    mName = "no const";
+    cout << mName << endl;
+  }
+private:
+  string mName;
+};
+```
+
+```cpp
+class Cat
+{
+public: 
+  Cat(string name): mName{std::move(name)} {};
+  // 🚨 const 명시하지 않음
+  void speak()
+  {
+    cout << mName << endl;
+  }
+private:
+  string mName;
+};
+
+int main(void) 
+{
+  const Cat kitty{"kitty"};
+  // 🚨 const를 명시하지 않은 메소드 사용해 에러 발생!
+  kitty.speak();
+  return 0;
+}
+```
+
+- mutable 키워드가 붙은 member 변수는 const 함수에서도 변경 가능!
+- 가능하면 mutable은 지양!
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Cat
+{
+public: 
+  Cat(string name): mName{std::move(name)} {};
+  void speak() const
+  {
+    mName = "mutable!";
+    cout << mName << endl;
+  }
+private:
+  mutable string mName;
+};
+
+int main(void) 
+{
+  const Cat kitty{"kitty"};
+  kitty.speak();
+  return 0;
+}
+```
+
+<br>
+
+### explicit
+- implicit conversion
+- constructor에 argument가 1개만 있을 때 명시해줘 implicit conversion 방지
+
+```cpp
+class Cat
+{
+public: 
+  Cat(int age): mAge{age} {};
+  void printAge() const
+  {
+    cout << "age: " << mAge << endl;
+  };
+private:
+  int mAge;
+};
+
+int main(void) 
+{ 
+  // 🚨 complier가 implicit 하게 conversion 해
+  // constructor의 argument에 전달
+  const Cat kitty = 3;
+  kitty.printAge();
+  return 0;
+}
+```
+
+```cpp
+class Cat
+{
+public: 
+  // 🚨 explicit 하게 argument를 넘겨주라고 명시
+  explicit Cat(int age): mAge{age} {};
+  void printAge() const
+  {
+    cout << "age: " << mAge << endl;
+  };
+private:
+  int mAge;
+};
+
+int main(void) 
+{
+  const Cat kitty = 3;
+  kitty.printAge();
+  return 0;
+}
+```
+
+<br>
+
+### encapsulation return type
+- encapsulation interface를 만들 때 값이 작을 때는 return by value를 해도 괜찮지만 값이 크다면 return by const reference가 더 효율적이다.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Cat
+{
+public:
+  Cat()
+  {
+    mAge = 0;    
+    mName = "cat";
+  }
+  void age(int age)
+  {
+    mAge = age;
+  }
+  int age() const
+  {
+    return mAge;
+  }
+  void name(string name)
+  {
+    mName = move(name);
+  }
+
+  /*
+  string name() const
+  {
+    // return by value에 의해 불필요한 복사 발생
+    return mName;
+  }
+  */
+
+  const string& name() const
+  {
+    return mName;
+  }
+private:
+  int mAge;
+  string mName;
+};
+
+int main(void) 
+{
+  const Cat kitty;
+  string name = kitty.name();            // deep copy
+  const string & nameRef = kitty.name(); // no deep copy
+}
+```
+
+- return by value
+  - 1 copy
+<img src = "image-6.png" width = "60%">
+
+<br>
+
+- const reference로 return & 받는 타입도 const referenc 인 경우
+  - 0 copy
+
+```cpp
+// 받은 reference가 받은 문자열을 수정하지 못하도록
+// 막아주는 역할을 한다.
+const string & nameRef = kitty.name();
+```
+
+<img src = "image-7.png" width = "64%">
+ 
