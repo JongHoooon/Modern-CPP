@@ -2,7 +2,7 @@
 
 <br>
 
-## Inheritance Intro
+## 1. Inheritance Intro
 
 ### 사용하는 이유
 - class relation
@@ -58,7 +58,7 @@ class D : private A    // 'private' is default for classes
 
 <br>
 
-## Virtual Function
+## 2. Virtual Function
 
 ### Constructor / Destructor
 
@@ -219,3 +219,143 @@ int main() {
   delete polyAnimal;
 }
 ```
+
+<br>
+
+## 3. Virtual Table
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Animal
+{
+public:
+  void speak()
+  {
+    cout << "Animal" << endl;
+  }
+  // virtual ~Animal()=default;
+private:
+  double height; // 8bytes
+};
+
+class Cat : public Animal
+{
+public: 
+  void speak()
+  {
+    cout << "meow~" << endl;
+  }
+private:
+  double weight; // 8bytes + 8bytes
+};
+ 
+int main() {
+  cout << "Animal size: " << sizeof(Animal) << endl;
+  cout << "Cat size: " << sizeof(Cat) << endl;
+}
+/*
+Animal size: 8
+Cat size: 16
+*/
+```
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Animal
+{
+public:
+  virtual void speak()
+  {
+    cout << "Animal" << endl;
+  }
+  // virtual ~Animal()=default;
+private:
+  double height; // 8bytes
+};
+
+class Cat : public Animal
+{
+public: 
+  void speak() override
+  {
+    cout << "meow~" << endl;
+  }
+private:
+  double weight; // 8bytes + 8bytes
+};
+ 
+int main() {
+  cout << "Animal size: " << sizeof(Animal) << endl;
+  cout << "Cat size: " << sizeof(Cat) << endl;
+}
+/*
+Animal size: 16
+Cat size: 24
+*/
+```
+
+- virtual 키워드를 사용하면 virtual table address 정보가 추가로 들어가 size가 커진다.
+
+<img src = "image.png" width = "80%">
+
+<br>
+
+## 4. Pure Virtual Function
+
+### Pure Virtual Function
+> function implementation 이 없는 virtual function 
+- object 생성이 불가능함
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Animal
+{
+public:
+  virtual void speak() = 0;
+  virtual ~Animal()=default;
+private:
+  double height; // 8bytes
+};
+
+class Cat : public Animal
+{
+public: 
+  /* 🚨 unimplemented pure virtual method 'speak' in 'Cat' */
+  // void speak() override
+  // {
+  //   cout << "meow~" << endl;
+  // }
+private:
+  double weight; // 8bytes + 8bytes
+};
+ 
+int main() {
+  Cat cat;
+}
+```
+
+### Abstract class
+> Pure Virtual Function을 1개라도 갖고있는 class
+
+### Interface class
+> implementation X, only pure virtual function
+> member variable X
+
+- 구현부가 있으면 추후 derived class에 원하지 않는 구현부가 상속될 수 있음
+  - 원하지 않는 구현부가 절달될 때 virtual, override 키워드를 붙여 override하도록 수정해야함
+- member varible이 있으면 불필요한 member varible들이 상속될 수 있음
+
+<br>
+
+- derived class에서 중복이 되는 메소드가 있을 때는 Interface class와 Implementation class를 구현해 다중상속을 통해 해결 
+
+
+<br>
+
+## Multiple Inheritance
