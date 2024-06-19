@@ -5,3 +5,4 @@
 3. [Resource Move](/3_Resource_Move/Resource_Move.md) 
 4. [OOP](/4_OOP/OOP.md)
 5. [Inheritance](/5_Inheritance/Inheritance.md)
+6. [Smart Pointer](/6_Smart_Pointer/Smart_Pointer.md)
